@@ -20,12 +20,12 @@ public class Cannon {
     private CSolenoids solMoveTurret = new CSolenoids(Var.chanTurretMoveUpTShirt, Var.chanTurretMoveDownTShirt, true);
     private CSolenoids solShootShirt = new CSolenoids(Var.chanSolShootUpTShirt, Var.chanSolShootDownTShirt, true);
     private CSolenoids solChargeTurret = new CSolenoids(Var.chanSolUpChargeShirt, Var.chanSolDownChargeShirt, false);
-    private CButton btChargeTurret = new CButton();
-    private CButton btShootShirt = new CButton();
-    private CButton btAimTur = new CButton();
-    private CButton btChargeTmLower = new CButton(); 
-    private CButton btChargeTmHigher = new CButton(); 
-    private CButton btEnableKickBack = new CButton();
+    private CButton btChargeTurret = new CButton(true);
+    private CButton btShootShirt = new CButton(true);
+    private CButton btAimTur = new CButton(true);
+    private CButton btChargeTmLower = new CButton(true); 
+    private CButton btChargeTmHigher = new CButton(true); 
+    private CButton btEnableKickBack = new CButton(true);
     private Timer tSolTurretOff = new Timer();
     private Timer tSolChargeTurret = new Timer();
     private boolean bIsCharging = false;
@@ -34,15 +34,23 @@ public class Cannon {
     private int iPrint = 0;
     private String sChargeTm;
     private CPrintDriver printDriver = new CPrintDriver();
+    private Joystick joy;
+    private Drive driver;
 
-    public void run(Joystick joy, Drive driver)
+    public Cannon(Joystick joystick, Drive drive)
+    {
+        joy = joystick;
+        driver = drive;
+    }
+    
+    public void run()
     {        
-        btShootShirt.run(joy.getRawButton(Var.buttonShootShirt));
-        btAimTur.run(joy.getRawButton(Var.buttonAimDown));
-        btChargeTurret.run(joy.getRawButton(Var.buttonChargeShirt));
-        btChargeTmLower.run(joy.getRawButton(Var.buttonChrgTmLower));
-        btChargeTmHigher.run(joy.getRawButton(Var.buttonChrgTmHigher));
-        btEnableKickBack.run(joy.getRawButton(Var.buttonJoyKickBack));
+        btShootShirt.run(joy.getRawButton(Var.btShootShirt));
+        btAimTur.run(joy.getRawButton(Var.btAimDown));
+        btChargeTurret.run(joy.getRawButton(Var.btChargeShirt));
+        btChargeTmLower.run(joy.getRawButton(Var.btChrgTmLower));
+        btChargeTmHigher.run(joy.getRawButton(Var.btChrgTmHigher));
+        btEnableKickBack.run(joy.getRawButton(Var.btJoyKickBack));
         
         if(btAimTur.gotPressed())
         {

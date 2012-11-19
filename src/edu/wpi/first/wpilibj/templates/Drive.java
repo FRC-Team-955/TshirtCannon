@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.*;
  */
          
 public class Drive {
+    
+    private Joystick joy;
     private Victor motorRight = new Victor(Var.chanVicDriveRight);
     private Victor motorLeft = new Victor(Var.chanVicDriveLeft);
     private double mtRightSpeed = 0;
@@ -25,7 +27,12 @@ public class Drive {
     private double x = 0;
     private double y = 0;
     
-    public void run(Joystick joy)
+    public Drive(Joystick joystick)
+    {
+        joy = joystick;
+    }
+    
+    public void run()
     {		
         y = joy.getY() * Math.abs(joy.getY());
         x = joy.getX() * Math.abs(joy.getX());

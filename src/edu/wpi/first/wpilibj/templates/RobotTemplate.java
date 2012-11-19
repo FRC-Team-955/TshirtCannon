@@ -25,10 +25,10 @@ import edu.wpi.first.wpilibj.*;
 // Max time to charge befpre valves pop off : 3.85 * 4, ABOUT 15
 public class RobotTemplate extends IterativeRobot {
     Joystick ps3Joy = new Joystick(1); 
-    Drive drive = new Drive();
-    Cannon cannon = new Cannon();
-    CRecord recorder = new CRecord();
-    CUnderGlow underGlow = new CUnderGlow();
+    Drive drive = new Drive(ps3Joy);
+    Cannon cannon = new Cannon(ps3Joy, drive);
+    CUnderGlow underGlow = new CUnderGlow(ps3Joy);
+    CRecord recorder = new CRecord(ps3Joy, drive, cannon, underGlow);
 	
     /**
     * This function is run when the robot is first started up and should be
@@ -48,12 +48,12 @@ public class RobotTemplate extends IterativeRobot {
      * This function is called once each time the robot enters operator control. False
      */
     public void teleopPeriodic() {
-        drive.run(ps3Joy);
-        cannon.run(ps3Joy, drive);
+        drive.run();
+        cannon.run();
 
         
-        underGlow.run(ps3Joy);
-        recorder.run(ps3Joy, cannon, drive, underGlow);
+        underGlow.run();
+        recorder.run();
     }
 }
 /*

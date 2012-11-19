@@ -12,13 +12,19 @@ import edu.wpi.first.wpilibj.*;
  */
 public class CUnderGlow {
 	
+    private Joystick joy;
     private Victor mtGlow = new Victor(Var.chanVicLight);
-    private CButton btLight = new CButton();
+    private CButton btLight = new CButton(true);
     private boolean bLight = false;
-
-    public void run(Joystick joy)
+    
+    public CUnderGlow(Joystick joystick)
     {
-        btLight.run(joy.getRawButton(Var.buttonLight));
+        joy  = joystick;
+    }
+    
+    public void run()
+    {
+        btLight.run(joy.getRawButton(Var.btLight));
 
         if(btLight.gotPressed())
         {

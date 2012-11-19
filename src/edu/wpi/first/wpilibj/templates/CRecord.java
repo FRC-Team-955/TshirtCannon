@@ -1,176 +1,134 @@
 package edu.wpi.first.wpilibj.templates;
+import edu.wpi.first.wpilibj.Joystick;
+import java.io.Writer;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
+// @author Fauzi
 /*
  * This class will hopefully be responsible for recording the robots 
  * movements and "replaying" them.
  */
-//package recording;
-
-import edu.wpi.first.wpilibj.*;
-//test
-/**
- *
- * @author Fauzi
- */
 
 public class CRecord {
-
-    Timer trRecord = new Timer();
-    Timer trReplay = new Timer();
-    CJoystickMimic joyEmu = new CJoystickMimic();
-    double x = 0;
-    double y = 0;
-    CButton btRecord = new CButton();
-    CButton btReplay = new CButton();
-    CButton btClear = new CButton();
-    boolean bRecStart = false;
-    boolean bRepStart = false;
-    boolean bRepDone = false;
-    boolean printReg = false;
-    int iPrintWhat = 6;
-    CPrintDriver printToDriverSt = new CPrintDriver();
-   
-    public void run(Joystick joy, Cannon cannon, Drive driver, CUnderGlow underGlow)
+    
+    private CFileWriter fileWriter;		//	<----------------------
+    private CFileReader fileReader;
+    private CButton btRecord = new CButton(false);
+    private CButton btReplay = new CButton(false);
+    private CPrintDriver printToDriverSt = new CPrintDriver();
+    private String sPrintWhat = "";
+    private String sType = "";
+    private CTimer tmRecord = new CTimer();
+    private CTimer tmReplay = new CTimer();
+    private boolean bRepStarted = false;
+    private boolean bRecStarted = false;
+    private boolean bDoneReplay = false;
+    private CJoyEmulator joyAuto = new CJoyEmulator();
+    private Joystick joy;
+    private Drive driver;
+    private Cannon cannon;
+    private CUnderGlow underGlow;   
+    
+    public CRecord(Joystick joystick, Drive drive, Cannon cannonner, CUnderGlow underGlower)
     {
-        btRecord.run(joy.getRawButton(Var.buttonRecord));
-        btReplay.run(joy.getRawButton(Var.buttonReplay));
-        btClear.run(joy.getRawButton(Var.buttonClearList));
-        
-        if(btClear.gotPressed())
-                clearAll();
-        
-        if(btRecord.getSwitch())    // Records the joystics X's and Y's into a linked list
-        {            
-            try
-            {
-                iPrintWhat = 1;
-                
-                if(printReg)
-                    System.out.println("Recording");
+        joy = joystick;
+        driver = drive;
+        cannon = cannonner;
+        underGlow = underGlower;
+    }
+    
+    public void run()
+    {
+        sType = "Auto: ";
+        btRecord.run(joy.getRawButton(Var.btRecord));
+        btReplay.run(joy.getRawButton(Var.btReplay));
 
-                if(!bRecStart)
-                {
-                    trRecord.start();
-                    bRecStart = true;
-                }
+        if(btRecord.getSwitch())   
+            record();
 
-                y = joy.getY() * Math.abs(joy.getY());
-                x = joy.getX() * Math.abs(joy.getX());
-                
-                joyEmu.add(trRecord.get(), driver.getMtLeftSpeed(), driver.getMtRightSpeed(), cannon.getTurretUpStatus(), underGlow.getLightStatus());
-            }
-            
-            catch(OutOfMemoryError E)
-            {
-                iPrintWhat = 5;
-                
-                if(printReg)
-                    System.out.println("Out of memory, cant Record");
-            }
-        }
-		
-        else if(btReplay.getSwitch())   // Inputs the values into the drive class, etc...
-        {               
-            Var.bDrive = false;
-            
-            if(joyEmu.isEmpty() == false)
-            {
-                if(!bRepStart)
-                {
-                    trReplay.start();
-                    bRepStart = true;
-                }
-
-                if(trReplay.get() <= trRecord.get() && bRepDone == false)
-                {
-                    iPrintWhat = 2;
-                    driver.setSpeed(joyEmu.getMtLeft(-1), joyEmu.getMtRight(-1));
-                    cannon.set(joyEmu.getTurret(-1));
-                    underGlow.set(joyEmu.getLight(-1));
-
-                    if(trReplay.get() > joyEmu.getTmr(-1))
-                        joyEmu.getNext();
-                    
-                    if(printReg)
-                        System.out.println("Replaying");
-                }
-
-                if(joyEmu.getIter() == joyEmu.size()-1) 
-                {
-                    iPrintWhat = 3;
-                    driver.setSpeed(0,0);
-                    bRepDone = true;
-                    
-                    if(printReg)
-                        System.out.println("Done");
-                }
-            }
-            
-            else
-            {
-                iPrintWhat = 4;
-                
-                if(printReg)
-                    System.out.println("Nothing Recorded");
-            }
-        }
+        else if(btReplay.getSwitch())
+            replay();
         
         else
         {
-            Var.bDrive = true;
-            bRecStart = false;
-            bRepStart = false;
-            bRepDone = false;
-            trReplay.stop();
-            trReplay.reset();
-            trRecord.stop();
-            joyEmu.reset();
-            iPrintWhat = 6;
-            
-            if(printReg)
-                System.out.println("Doing Nothing");
+            sPrintWhat = "Doing Nothing";
+            reset();
         }
         
-        printStatus(iPrintWhat);
+        printToDriverSt.print(Var.iRecordStatusLine, sType + sPrintWhat);
     }
     
-    private void clearAll() // To clear the memory so you can record something else
-    {
-        trRecord.stop();
-        trRecord.reset();
-        trReplay.stop();
-        trReplay.reset();
-        joyEmu.deleteAll();
-        x = 0;
-        y = 0;
-        bRecStart = false;
-        bRepStart = false;
-        bRepDone = false;
+    private void reset() // Resets timer and booleans so that you can record or replay again
+    {  
+        Var.bDrive = true;
+        
+        if(bRecStarted)
+        {
+            fileWriter.writeDouble(Var.dEndSignal);
+            fileWriter.close();
+            tmRecord.reset(true);
+            bRecStarted = false;
+        }
+
+        if(bRepStarted)
+        {
+            if(!fileReader.isClosed())
+                fileReader.close();
+            
+            tmReplay.reset(true);
+            bDoneReplay = false;
+            bRepStarted = false;
+        }
     }
     
-    private void printStatus(int i)
+    public void replay()
     {
-        if(i == 1)
-            printToDriverSt.print(Var.iCRecordStatus, "Recording");
+        Var.bDrive = false;
+                
+        if(!bRepStarted)
+        {
+            sPrintWhat = "Replaying";
+            fileReader = new CFileReader(Var.sAutoOutput);
+            tmReplay.start();
+            bRepStarted = true;
+        }
+
+        if(!bDoneReplay)
+        {
+            driver.setSpeed(joyAuto.getMtLeft(), joyAuto.getMtRight());
+            cannon.set(joyAuto.getCannonStatus());
+            underGlow.set(joyAuto.getUnderGlowStatus());
+
+            if(tmReplay.get() >= joyAuto.getTimer())
+            {
+                double dTemp = fileReader.readDouble(); // Temp var to see if we're done replay
+
+                if(dTemp < Var.dEndSignal+1) // If true, means we're done replaying
+                    bDoneReplay = true;
+
+                else
+                    joyAuto.add(dTemp, fileReader.readDouble(), fileReader.readDouble(), fileReader.readBoolean(), fileReader.readBoolean());
+            }
+        }
+		
+        else
+        {
+            sPrintWhat = "Done Replaying";
+            driver.setSpeed(0, 0);
+            fileReader.close();
+            tmReplay.stop();
+        }
+    }
+    
+    private void record()
+    {
+        if(!bRecStarted)
+        {
+            sPrintWhat = "Recording";
+            fileWriter = new CFileWriter(Var.sAutoOutput);
+            tmRecord.start();
+            bRecStarted = true;
+        }
         
-        else if(i == 2)
-            printToDriverSt.print(Var.iCRecordStatus, "Replaying");
-        
-        else if(i == 3)
-            printToDriverSt.print(Var.iCRecordStatus, "Done");
-        
-        else if(i == 4)
-            printToDriverSt.print(Var.iCRecordStatus, "Nothing Recorded");
-        
-        else if(i == 5)
-            printToDriverSt.print(Var.iCRecordStatus, "Out of memory, can't Record");
-        
-        else if(i == 6)
-            printToDriverSt.print(Var.iCRecordStatus, "Doing Nothing");
+        fileWriter.writeData(tmRecord.get(), driver.getMtLeftSpeed(), driver.getMtRightSpeed(), cannon.getTurretUpStatus(), underGlow.getLightStatus());
     }
 }

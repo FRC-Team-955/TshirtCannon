@@ -31,17 +31,16 @@ public class Var {
     static final int chanSolDownChargeShirt = 6;
     
     // Joysticks and buttons
-    static final int buttonShootShirt = 4;
-    static final int buttonAimUp = 1;
-    static final int buttonAimDown = 3;
-    static final int buttonChargeShirt = 8;
-    static final int buttonChrgTmLower = 5;
-    static final int buttonChrgTmHigher = 6;
-    static final int buttonJoyKickBack = 2;
-    static int buttonRecord = 9;
-    static int buttonReplay = 12;
-    static int buttonClearList = 10;
-    static final int buttonLight = 11;
+    static final int btShootShirt = 4;
+    static final int btAimUp = 1;
+    static final int btAimDown = 3;
+    static final int btChargeShirt = 8;
+    static final int btChrgTmLower = 5;
+    static final int btChrgTmHigher = 6;
+    static final int btJoyKickBack = 12;
+    static int btRecord = 9;
+    static int btReplay = 2;
+    static final int btLight = 11;
     
     // Other
     //static boolean bRecord = false;
@@ -49,11 +48,14 @@ public class Var {
     static boolean bShooting = false;
     static final double kickBackSpeed = 1;
     static final double jagurRampSpeed = 0.1;
+    static final double dEndSignal = -10;
     static final int chanJoyDrive = 3;
+    static boolean bAnotherIsPressed = false;
+    static final String sAutoOutput = "file:///TshirtCannonAuto.txt";
     
     // Printing to Driverstation lines, 2-6 are available only
     static final int iChargeFactorLine = 2;
     static final int iChargeStatusLine = 3;
     static final int iKickBackLine = 4;
-    static final int iCRecordStatus = 5;
+    static final int iRecordStatusLine = 5;
 }
