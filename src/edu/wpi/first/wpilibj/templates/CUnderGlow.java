@@ -14,7 +14,7 @@ public class CUnderGlow {
 	
     private Joystick joy;
     private Victor mtGlow = new Victor(Var.chanVicLight);
-    private CButton btLight = new CButton(true);
+    private CButton btLight = new CButton();
     private boolean bLight = false;
     
     public CUnderGlow(Joystick joystick)

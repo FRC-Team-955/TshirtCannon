@@ -41,15 +41,15 @@ public class CFileWriter {
         }
     }
     
-    public void writeData(double dTime, double dMtLeft, double dMtRight, boolean bRtrveStat, boolean bReleaseStat)
+    public void writeData(double dTime, double dMtLeft, double dMtRight, boolean bTurUp, boolean bLightStat)
     {
         try
         {
             writer.writeDouble(dTime);
             writer.writeDouble(dMtLeft);
             writer.writeDouble(dMtRight);
-            writer.writeBoolean(bRtrveStat);
-            writer.writeBoolean(bReleaseStat);
+            writer.writeBoolean(bTurUp);
+            writer.writeBoolean(bLightStat);
         }
         
         catch(IOException e)

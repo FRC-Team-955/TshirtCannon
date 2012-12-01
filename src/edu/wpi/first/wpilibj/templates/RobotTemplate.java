@@ -28,7 +28,7 @@ public class RobotTemplate extends IterativeRobot {
     Drive drive = new Drive(ps3Joy);
     Cannon cannon = new Cannon(ps3Joy, drive);
     CUnderGlow underGlow = new CUnderGlow(ps3Joy);
-    CRecord recorder = new CRecord(ps3Joy, drive, cannon, underGlow);
+    CAutonomous autonomous = new CAutonomous(ps3Joy, drive, cannon, underGlow);
 	
     /**
     * This function is run when the robot is first started up and should be
@@ -39,9 +39,32 @@ public class RobotTemplate extends IterativeRobot {
     underGlow.set(true);
 
     }
+        // This function is called when we disable the robot.
+    public void disabledInit()
+    {
+        autonomous.resetAutonomous(); // Resets the replay to false if it was true before
+    }
     
-    public void autonomous() {
+    // Called once in autonomous
+    public void autonomousInit()
+    {
+        int iFileType = Var.chnDigInReg;
         
+        if(DriverStation.getInstance().getDigitalIn(Var.chnDigInAutoCtr))
+            iFileType = Var.chnDigInAutoCtr;
+        
+        else if(DriverStation.getInstance().getDigitalIn(Var.chnDigInAutoLft))
+            iFileType = Var.chnDigInAutoLft;
+        
+        else if(DriverStation.getInstance().getDigitalIn(Var.chnDigInAutoRght))
+            iFileType = Var.chnDigInAutoRght;
+        
+        autonomous.changeFile(iFileType);
+    }
+    
+    // This function is called periodically during autonomous
+    public void autonomousPeriodic() {
+        autonomous.replay(Var.sFileType);
     }
 
     /**
@@ -53,7 +76,7 @@ public class RobotTemplate extends IterativeRobot {
 
         
         underGlow.run();
-        recorder.run();
+        autonomous.run();
     }
 }
 /*

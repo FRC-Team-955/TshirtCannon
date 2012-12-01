@@ -31,27 +31,36 @@ public class Var {
     static final int chanSolDownChargeShirt = 6;
     
     // Joysticks and buttons
-    static final int btShootShirt = 4;
+    
     static final int btAimUp = 1;
+    static int btReplay = 2;
     static final int btAimDown = 3;
-    static final int btChargeShirt = 8;
+    static final int btShootShirt = 4;
     static final int btChrgTmLower = 5;
     static final int btChrgTmHigher = 6;
-    static final int btJoyKickBack = 12;
+    static final int btChargeShirt = 8;
     static int btRecord = 9;
-    static int btReplay = 2;
-    static final int btLight = 11;
+    static final int btLight = 10;
+    static final int btChangeFile = 11;
+    static final int btJoyKickBack = 12;
     
     // Other
-    //static boolean bRecord = false;
     static boolean bDrive = true;
     static boolean bShooting = false;
     static final double kickBackSpeed = 1;
     static final double jagurRampSpeed = 0.1;
-    static final double dEndSignal = -10;
+    static final double dENDSIGNAL = -10.0;
     static final int chanJoyDrive = 3;
-    static boolean bAnotherIsPressed = false;
-    static final String sAutoOutput = "file:///TshirtCannonAuto.txt";
+    static final int iFileMax = 4;
+    static final String sRegOutput = "file:///regVal.txt";
+    static String sFileType = sRegOutput;
+    static final CPrintDriver drvStationPrinter = new CPrintDriver();
+    
+    // DriverStation Channels
+    static final int chnDigInReg = 0;
+    static final int chnDigInAutoCtr = 1;
+    static final int chnDigInAutoLft = 2;
+    static final int chnDigInAutoRght = 3;
     
     // Printing to Driverstation lines, 2-6 are available only
     static final int iChargeFactorLine = 2;

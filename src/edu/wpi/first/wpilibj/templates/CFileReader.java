@@ -52,7 +52,7 @@ public class CFileReader {
         }
     }
     
-	public double readDouble()
+    public double readDouble()
     {
         try 
         {           
