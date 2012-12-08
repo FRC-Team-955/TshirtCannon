@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.*;
  *
  * @author RaiderPC
  */
-public class CUnderGlow {
+public class UnderGlow {
 	
     private Joystick joy;
     private Victor mtGlow = new Victor(Var.chanVicLight);
-    private CButton btLight = new CButton();
+    private Button btLight = new Button();
     private boolean bLight = false;
     
-    public CUnderGlow(Joystick joystick)
+    public UnderGlow(Joystick joystick)
     {
         joy  = joystick;
     }

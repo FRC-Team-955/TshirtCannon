@@ -2,7 +2,7 @@ package edu.wpi.first.wpilibj.templates;
 
 // @author Fauzi
 
-class CJoyEmulator{
+class JoyEmulator{
     private double m_dTimer = 0;
     private double m_dMtLeft = 0;
     private double m_dMtRight = 0;

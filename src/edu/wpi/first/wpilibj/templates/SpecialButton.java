@@ -10,7 +10,7 @@ package edu.wpi.first.wpilibj.templates;
  */
 
 // This class allows only one button to pressed at a time
-public class CSpecialButton {
+public class SpecialButton {
     private boolean bCurState = false;
     private boolean bLastState = false;
     private boolean bSwitch = false;

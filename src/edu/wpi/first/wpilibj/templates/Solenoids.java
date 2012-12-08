@@ -16,14 +16,14 @@ import edu.wpi.first.wpilibj.*;
  * and having to manualy set them indivdually on and off. So instead I just made
  * a Solenoid class with functions that do it for us :D
  */
-public class CSolenoids 
+public class Solenoids 
 {
 
     private Solenoid solUp;
     private Solenoid solDown;
     private boolean bSetDown;
     
-    public CSolenoids(int solDownChannel, int solUpChannel, boolean bDown)
+    public Solenoids(int solDownChannel, int solUpChannel, boolean bDown)
     {
         bSetDown = bDown;
         solUp = new Solenoid(solUpChannel);

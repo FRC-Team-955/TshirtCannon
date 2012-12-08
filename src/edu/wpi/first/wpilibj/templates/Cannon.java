@@ -17,15 +17,15 @@ import edu.wpi.first.wpilibj.*;;
 
 public class Cannon {
     
-    private CSolenoids solMoveTurret = new CSolenoids(Var.chanTurretMoveUpTShirt, Var.chanTurretMoveDownTShirt, true);
-    private CSolenoids solShootShirt = new CSolenoids(Var.chanSolShootUpTShirt, Var.chanSolShootDownTShirt, true);
-    private CSolenoids solChargeTurret = new CSolenoids(Var.chanSolUpChargeShirt, Var.chanSolDownChargeShirt, false);
-    private CButton btChargeTurret = new CButton();
-    private CButton btShootShirt = new CButton();
-    private CButton btAimTur = new CButton();
-    private CButton btChargeTmLower = new CButton(); 
-    private CButton btChargeTmHigher = new CButton(); 
-    private CButton btEnableKickBack = new CButton();
+    private Solenoids solMoveTurret = new Solenoids(Var.chanTurretMoveUpTShirt, Var.chanTurretMoveDownTShirt, true);
+    private Solenoids solShootShirt = new Solenoids(Var.chanSolShootUpTShirt, Var.chanSolShootDownTShirt, true);
+    private Solenoids solChargeTurret = new Solenoids(Var.chanSolUpChargeShirt, Var.chanSolDownChargeShirt, false);
+    private Button btChargeTurret = new Button();
+    private Button btShootShirt = new Button();
+    private Button btAimTur = new Button();
+    private Button btChargeTmLower = new Button(); 
+    private Button btChargeTmHigher = new Button(); 
+    private Button btEnableKickBack = new Button();
     private Timer tSolTurretOff = new Timer();
     private Timer tSolChargeTurret = new Timer();
     private boolean bIsCharging = false;
@@ -33,7 +33,7 @@ public class Cannon {
     private int iChargeFactor = 4;
     private int iPrint = 0;
     private String sChargeTm;
-    private CPrintDriver printDriver = new CPrintDriver();
+    private PrintDriver printDriver = new PrintDriver();
     private Joystick joy;
     private Drive driver;
 

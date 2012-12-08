@@ -25,10 +25,8 @@ import edu.wpi.first.wpilibj.*;
 // Max time to charge befpre valves pop off : 3.85 * 4, ABOUT 15
 public class RobotTemplate extends IterativeRobot {
     Joystick ps3Joy = new Joystick(1); 
-    Drive drive = new Drive(ps3Joy);
-    Cannon cannon = new Cannon(ps3Joy, drive);
-    CUnderGlow underGlow = new CUnderGlow(ps3Joy);
-    CAutonomous autonomous = new CAutonomous(ps3Joy, drive, cannon, underGlow);
+    Robot bot = new Robot(ps3Joy);
+    Autonomous autonomous = new Autonomous(ps3Joy, bot);
 	
     /**
     * This function is run when the robot is first started up and should be
@@ -36,7 +34,6 @@ public class RobotTemplate extends IterativeRobot {
     */
     public void robotInit() {
     ps3Joy.setAxisChannel(Joystick.AxisType.kX, Var.chanJoyDrive);
-    underGlow.set(true);
 
     }
         // This function is called when we disable the robot.
@@ -64,18 +61,15 @@ public class RobotTemplate extends IterativeRobot {
     
     // This function is called periodically during autonomous
     public void autonomousPeriodic() {
-        autonomous.replay(Var.sFileType);
+        autonomous.replay();
     }
 
     /**
      * This function is called once each time the robot enters operator control. False
      */
     public void teleopPeriodic() {
-        drive.run();
-        cannon.run();
-
         
-        underGlow.run();
+        bot.run();
         autonomous.run();
     }
 }

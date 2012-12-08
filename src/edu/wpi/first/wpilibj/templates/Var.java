@@ -33,16 +33,16 @@ public class Var {
     // Joysticks and buttons
     
     static final int btAimUp = 1;
-    static int btReplay = 2;
+    static final int btJoyKickBack = 2;
     static final int btAimDown = 3;
     static final int btShootShirt = 4;
     static final int btChrgTmLower = 5;
     static final int btChrgTmHigher = 6;
     static final int btChargeShirt = 8;
-    static int btRecord = 9;
+    static final int btRecord = 9;
     static final int btLight = 10;
     static final int btChangeFile = 11;
-    static final int btJoyKickBack = 12;
+    static final int btReplay = 12;
     
     // Other
     static boolean bDrive = true;
@@ -50,11 +50,10 @@ public class Var {
     static final double kickBackSpeed = 1;
     static final double jagurRampSpeed = 0.1;
     static final double dENDSIGNAL = -10.0;
+    static final double dPrecision = 2;
     static final int chanJoyDrive = 3;
     static final int iFileMax = 4;
-    static final String sRegOutput = "file:///regVal.txt";
-    static String sFileType = sRegOutput;
-    static final CPrintDriver drvStationPrinter = new CPrintDriver();
+    static final PrintDriver drvStationPrinter = new PrintDriver();
     
     // DriverStation Channels
     static final int chnDigInReg = 0;
@@ -67,4 +66,28 @@ public class Var {
     static final int iChargeStatusLine = 3;
     static final int iKickBackLine = 4;
     static final int iRecordStatusLine = 5;
+    
+    public static String setPrecision(double dDouble)
+    {
+        String sArg = Double.toString(dDouble);
+        String sReturn = "";
+        boolean bAfterDec = false;
+        int iSpaceAfter = 0;
+        
+        for(int index = 0; index < sArg.length(); index++)
+        {
+            sReturn += sArg.charAt(index);
+            
+            if(sArg.charAt(index) == '.')
+                bAfterDec = true;
+            
+            else if(bAfterDec)
+                iSpaceAfter++;
+                
+            if(iSpaceAfter == dPrecision)
+                break;
+        }
+        
+        return sReturn;
+    }
 }

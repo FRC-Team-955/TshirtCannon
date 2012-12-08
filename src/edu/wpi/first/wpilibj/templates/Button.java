@@ -8,7 +8,7 @@ package edu.wpi.first.wpilibj.templates;
  *
  * @author fauzi
  */
-public class CButton {
+public class Button {
     
     private boolean bCurState = false;
     private boolean bLastState = false;

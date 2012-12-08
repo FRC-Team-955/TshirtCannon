@@ -4,12 +4,8 @@
  */
 package edu.wpi.first.wpilibj.templates;
 import java.io.IOException;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.*;
 import javax.microedition.io.Connector;
-
-import com.sun.squawk.io.BufferedReader;
 import com.sun.squawk.microedition.io.FileConnection;
 
 /**
@@ -17,22 +13,22 @@ import com.sun.squawk.microedition.io.FileConnection;
  * @author Fauzi
  */
 
-public class CFileWriter {
+public class FileWriter {
 
-    private String sFile;
-    private FileConnection fc;
-    private DataOutputStream writer;
-    private boolean bIsClosed = false;    
+    private String m_sFile;
+    private FileConnection m_fc;
+    private DataOutputStream m_writer;
+    private boolean m_bIsClosed = false;    
     
-    public CFileWriter(String sFileName)
+    public FileWriter(String sFileName)
     {
-        sFile = sFileName;
+        m_sFile = sFileName;
                 
         try
         {
-            fc = (FileConnection)Connector.open(sFile, Connector.WRITE);
-            fc.create();
-            writer = new DataOutputStream(fc.openOutputStream(0));
+            m_fc = (FileConnection)Connector.open(m_sFile, Connector.WRITE);
+            m_fc.create();
+            m_writer = new DataOutputStream(m_fc.openOutputStream(0));
         }
         
         catch (IOException e) 
@@ -41,15 +37,15 @@ public class CFileWriter {
         }
     }
     
-    public void writeData(double dTime, double dMtLeft, double dMtRight, boolean bTurUp, boolean bLightStat)
+    public void writeData(double dTime, double dMtLeft, double dMtRight, boolean bShootUp, boolean bUnderGlow)
     {
         try
         {
-            writer.writeDouble(dTime);
-            writer.writeDouble(dMtLeft);
-            writer.writeDouble(dMtRight);
-            writer.writeBoolean(bTurUp);
-            writer.writeBoolean(bLightStat);
+            m_writer.writeDouble(dTime);
+            m_writer.writeDouble(dMtLeft);
+            m_writer.writeDouble(dMtRight);
+            m_writer.writeBoolean(bShootUp);
+            m_writer.writeBoolean(bUnderGlow);
         }
         
         catch(IOException e)
@@ -62,8 +58,8 @@ public class CFileWriter {
     {
         try
         {
-            writer.writeInt(iData);
-            writer.flush(); 
+            m_writer.writeInt(iData);
+            m_writer.flush(); 
         } 
         
         catch (IOException e) 
@@ -76,8 +72,8 @@ public class CFileWriter {
     {
         try
         {
-            writer.writeDouble(dData);
-            writer.flush();
+            m_writer.writeDouble(dData);
+            m_writer.flush();
         } 
         
         catch (IOException e) 
@@ -90,8 +86,8 @@ public class CFileWriter {
     {
         try
         {
-            writer.writeBoolean(bData);
-            writer.flush();
+            m_writer.writeBoolean(bData);
+            m_writer.flush();
         } 
         
         catch (IOException e) 
@@ -104,9 +100,9 @@ public class CFileWriter {
     {
         try
         {
-            writer.close();
-            fc.close();
-            bIsClosed = true;
+            m_writer.close();
+            m_fc.close();
+            m_bIsClosed = true;
         }
         
         catch(IOException e)
@@ -119,10 +115,10 @@ public class CFileWriter {
     {
         try
         {
-            fc = (FileConnection)Connector.open(sFile, Connector.WRITE);
-            fc.create();
-            writer = new DataOutputStream(fc.openOutputStream(0));
-            bIsClosed = false;
+            m_fc = (FileConnection)Connector.open(m_sFile, Connector.WRITE);
+            m_fc.create();
+            m_writer = new DataOutputStream(m_fc.openOutputStream(0));
+            m_bIsClosed = false;
         }
         
         catch (IOException e) 
@@ -133,6 +129,6 @@ public class CFileWriter {
     
     public boolean isClosed()
     {
-        return bIsClosed;
+        return m_bIsClosed;
     }
 }
