@@ -25,15 +25,12 @@ public class Drive {
     public void run()
     {      
         if(Vars.fnCanDrive() && !Vars.bShooting)
-        {
             regDrive();
-            setSpeed(m_dLeftSpeed, m_dRightSpeed);
-        }
         
         else
             m_sDriveStatus = "Drive Disabled";
         
-        Vars.fnPrintToDriverstation(Vars.iDriveStatusLine, m_sDriveStatus);
+        Vars.fnPrintToDriverstation(Vars.prDriveStatusLine, m_sDriveStatus);
     }
 
     private void regDrive()
@@ -49,6 +46,7 @@ public class Drive {
         
         m_dRightSpeed = (-y+x);
         m_dLeftSpeed = (y+x);  
+        setSpeed(m_dLeftSpeed, m_dRightSpeed);
     }
     
     public void setSpeed(double setMtLeft, double setMtRight)

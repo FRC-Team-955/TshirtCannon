@@ -1,33 +1,31 @@
 package autonomous;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import utilities.Robot;
 import utilities.Vars;
 import utilities.MyJoystick;
 
 /**
- * Class to record/replay robots movements
+ * Class to record/replay robots movements.
  * @author fauzi
  */
 public class Autonomous {
     
     // CONSTANTS
-    private final String m_sRegOutput = "file:///regVal.txt";
-    private final String m_sAutoCenter = "file:///autoval.txt";
-    private final String m_sAutoLeft = "file:///autoLeft.txt";
-    private final String m_sAutoRight = "file:///autoRight.txt";
+    private static final String m_sRegOutput = "file:///regVal.txt";
+    private static final String m_sAutoCenter = "file:///autoval.txt";
+    private static final String m_sAutoLeft = "file:///autoLeft.txt";
+    private static final String m_sAutoRight = "file:///autoRight.txt";
+    private static final double m_dMaxAutoTime = 14.75;
      
     private String m_sFileName = m_sRegOutput;   
     private String m_sAutonmousStatus = "Doing Nothing";
     private String m_sFileTypeStat = "Reg: ";
-    private boolean m_bReplay = false; 
-    private boolean m_bRecord = false;
     private Recorder m_recorder;
     private Replayer m_replayer; 
     private MyJoystick m_joy;
 
     /**
-     *  Class used for autonomous
+     * Class used for autonomous.
      * @param joystick
      * @param bot 
      */
@@ -39,129 +37,156 @@ public class Autonomous {
     }
     
     /**
-     * Allows autonomous to run
+     * Allows autonomous to run.
      */
     public void run()
     {
         setButtonStat();
-		
-        if(!m_bRecord && !m_bReplay)
-            DpadSwitchFile();   // Changes files based on Dpad from controller
         
-        if(m_bRecord)   
+        if(m_joy.getSwitch(Vars.btRecord))   
             record();		
 
-        else if(m_bReplay)
+        else if(m_joy.getSwitch(Vars.btReplay))
             replay();
         
         else
             resetAutonomous();
         
-        Vars.fnPrintToDriverstation(Vars.iAutonomousStatLine, m_sFileTypeStat + m_sAutonmousStatus);
+        Vars.fnPrintToDriverstation(Vars.prAutonomousStatLine, m_sFileTypeStat + m_sAutonmousStatus);
     }
     
     /**
-     * Replays previous bot movements from specified file
+     * Replays previous bot movements from specified file.
      */
     public void replay()
     {
         m_replayer.replay(m_sFileName);
         
-        if(m_replayer.getReplayTime() > 0.00)
+        if(m_replayer.getReplayTime() > 0.00 && !overTimeLimit(m_replayer.getReplayTime()))
             m_sAutonmousStatus = "Replaying: " + m_replayer.getReplayTime();
         
+        else if(overTimeLimit(m_replayer.getReplayTime()))
+        {
+            m_replayer.stop();
+            m_sAutonmousStatus = "Over Replay Limit";
+        }
+        
         else
-            m_sAutonmousStatus = "Done Replaying";
+            m_sAutonmousStatus = "Finished Replaying";
     }
     
     /**
-     * Records bots movements to specified file, if allowed
+     * Records bots movements to specified file, if allowed.
      */
     private void record()
     {
         m_recorder.record(m_sFileName);
-        m_sAutonmousStatus = "Recording: " + m_recorder.getRecordTime();
+        
+        if(!overTimeLimit(m_recorder.getRecordTime()))
+            m_sAutonmousStatus = "Recording: " + m_recorder.getRecordTime();
+        
+        else
+        {
+            m_recorder.stop();
+            m_sAutonmousStatus = "Over Record Limit";
+        }
     }
     
     /**
-     * Resets the autonomous so we can use it again properly next time
+     * Resets the autonomous so we can use it again properly next time.
      */
     public void resetAutonomous()   
     {
         m_sAutonmousStatus = "Doing Nothing";
-        m_bReplay = false;
-        m_bRecord = false;
+        m_joy.setSwitch(Vars.btReplay, false);
+        m_joy.setSwitch(Vars.btRecord, false);
         m_replayer.reset();
         m_recorder.reset();
     }
     
+    /**
+     * Chooses the autonomous from the driverstation, for use right before 
+     * the actual autonomous begins.
+     */
     public void setFileBasedOnDriverInput()
     {
-        int iFileType = Vars.chnDigInReg;
+        int iFileType = Vars.stDigInReg;
         
-        if(DriverStation.getInstance().getDigitalIn(Vars.chnDigInAutoCtr))
-            iFileType = Vars.chnDigInAutoCtr;
+        if(Vars.fnDriverGetDigitalIn(Vars.stDigInAutoCtr))
+            iFileType = Vars.stDigInAutoCtr;
         
-        else if(DriverStation.getInstance().getDigitalIn(Vars.chnDigInAutoLft))
-            iFileType = Vars.chnDigInAutoLft;
+        else if(Vars.fnDriverGetDigitalIn(Vars.stDigInAutoLft))
+            iFileType = Vars.stDigInAutoLft;
         
-        else if(DriverStation.getInstance().getDigitalIn(Vars.chnDigInAutoRght))
-            iFileType = Vars.chnDigInAutoRght;
+        else if(Vars.fnDriverGetDigitalIn(Vars.stDigInAutoRght))
+            iFileType = Vars.stDigInAutoRght;
         
         changeFile(iFileType);
     }
     
-    /** 
-     * Switches the autonomous file based on Dpad status
-     */ 
-    private void DpadSwitchFile()
+    /**
+     * Sets up all the buttons, determining what got pressed ect...
+     */
+    private void setButtonStat()
     {
-        if(m_joy.getDpadUp())
-            changeFile(Vars.chnDigInReg);
+        if(m_joy.gotPressed(Vars.btReplay))
+            if(!m_joy.getSwitch(Vars.btRecord))
+                m_joy.flipSwitch(Vars.btReplay);
+                
+        else if(m_joy.gotPressed(Vars.btRecord))
+            if(!m_joy.getSwitch(Vars.btReplay))
+                m_joy.flipSwitch(Vars.btRecord);
+                        
+        if(!m_joy.getSwitch(Vars.btReplay) && !m_joy.getSwitch(Vars.btRecord))
+        {
+            // Changes the autonomous files
+            if(m_joy.getDpadUp())
+                changeFile(Vars.stDigInReg);
         
-        else if(m_joy.getDpadRight())
-            changeFile(Vars.chnDigInAutoRght);
-        
-        else if(m_joy.getDpadDown())
-            changeFile(Vars.chnDigInAutoCtr);
-        
-        else if(m_joy.getDpadLeft())
-            changeFile(Vars.chnDigInAutoLft);
+            else if(m_joy.getDpadRight())
+                changeFile(Vars.stDigInAutoRght);
+
+            else if(m_joy.getDpadDown())
+                changeFile(Vars.stDigInAutoCtr);
+
+            else if(m_joy.getDpadLeft())
+                changeFile(Vars.stDigInAutoLft);
+        }
     }
     
     /**
-     * Changes file based on number thats passed in
+     * Changes file based on number thats passed in, only 1 to 4 are valid.
      * @param iFileType 
      */
     private void changeFile(int iFileType)
     {
         switch (iFileType)
         {
-            case Vars.chnDigInReg:   // 0
-            {
-                m_sFileTypeStat = "Reg: ";
-                m_sFileName = m_sRegOutput;
-                break;
-            }
-
-            case Vars.chnDigInAutoCtr:   // 1
+            case Vars.stDigInAutoCtr:   // 1
             {
                 m_sFileTypeStat = "AutoCenter: ";
                 m_sFileName = m_sAutoCenter; 
                 break;
             } 
 
-            case Vars.chnDigInAutoLft:   // 2
+            case Vars.stDigInAutoLft:   // 2
             {
                 m_sFileTypeStat = "AutoLeft: ";
                 m_sFileName = m_sAutoLeft;
                 break;
             }
 
-            case Vars.chnDigInAutoRght:  // 3
+            case Vars.stDigInAutoRght:  // 3
             {
                 m_sFileTypeStat = "AutoRight: ";
                 m_sFileName = m_sAutoRight; 
+                break;
+            }
+                
+            case Vars.stDigInReg:   // 4
+            {
+                m_sFileTypeStat = "Reg: ";
+                m_sFileName = m_sRegOutput;
                 break;
             }
                 
@@ -175,17 +200,15 @@ public class Autonomous {
     }
     
     /**
-     * Determines whether we are replaying or recording, allows only one to
-     * be true at a time
+     * Determines whether we're over the 15 sec time limit for
+     * FRC Autonomous mode.
+     * @return 
      */
-    private void setButtonStat()
+    private boolean overTimeLimit(double dTime)
     {
-        if(m_joy.gotPressed(Vars.btReplay))
-            if(!m_bRecord)
-                m_bReplay = !m_bReplay;
-                
-        else if(m_joy.gotPressed(Vars.btRecord))
-            if(!m_bReplay)
-                m_bRecord = ! m_bRecord;
+        if(dTime >= m_dMaxAutoTime && !m_sFileName.equalsIgnoreCase(m_sRegOutput))
+            return true;
+        
+        return false;
     }
 }
