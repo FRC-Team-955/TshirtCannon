@@ -33,9 +33,10 @@ public class MyJoystick extends Joystick{
      * @return 
      */
     public boolean gotPressed(int iChan)
-    {
+	{		
         boolean bOutput = (!m_bLast[iChan] && getRawButton(iChan));
         m_bLast[iChan] = getRawButton(iChan);
+		
         return bOutput;
     }
     

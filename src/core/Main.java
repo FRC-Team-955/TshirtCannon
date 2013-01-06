@@ -11,6 +11,7 @@ import utilities.Robot;
 import utilities.Vars;
 import utilities.MyJoystick;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Victor;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,6 +25,7 @@ public class Main extends IterativeRobot
     MyJoystick ps3Joy = new MyJoystick(1, Vars.iPs3Buttons);
     Robot bot = new Robot(ps3Joy);
     Autonomous autonomous = new Autonomous(ps3Joy, bot);
+	Victor mtUnderGlow = new Victor(Vars.chnVicLight);
     
     /*
      * This function is run when the robot is first started up and should be
@@ -31,12 +33,14 @@ public class Main extends IterativeRobot
      */
     public void robotInit() 
     {
- 
+		mtUnderGlow.set(1);
     }
 
     // This function is called when we disable the robot.
     public void disabledInit()
     {
+		mtUnderGlow.set(1);
+		
         // Resets the replay to false if it was true before
         autonomous.resetAutonomous(); 
     }
@@ -46,6 +50,8 @@ public class Main extends IterativeRobot
      */
     public void autonomousInit()
     {
+		mtUnderGlow.set(1);
+		
         autonomous.setFileBasedOnDriverInput();
     }
     
@@ -58,6 +64,8 @@ public class Main extends IterativeRobot
     // This function is called periodically during operator control
     public void teleopPeriodic()
     {
+		mtUnderGlow.set(1);
+		
         bot.run();
         autonomous.run();
     }

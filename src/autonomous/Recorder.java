@@ -47,6 +47,10 @@ class Recorder {
             m_Index++;
             m_botDataAuto.setValues(m_tmRecorder.get(), m_bot);
             m_List.addElement(m_botDataAuto);
+			
+			// DEBUGGER
+			System.out.println(m_botDataAuto.getTime() + "-" + m_botDataAuto.getMtLeft() + "-" + m_botDataAuto.getMtRight() + "-" + m_botDataAuto.getCannonUp());
+        
         }
         
         else
@@ -55,7 +59,7 @@ class Recorder {
             m_bot.stopRobot();
             m_tmRecorder.stop();
             m_tmRecorder.reset();
-        }
+		}
     }
     
     /**
@@ -108,6 +112,9 @@ class Recorder {
             m_fileWriter.writeDouble(m_botDataAuto.getMtLeft());
             m_fileWriter.writeDouble(m_botDataAuto.getMtRight());
             m_fileWriter.writeBoolean(m_botDataAuto.getCannonUp());
+			
+//			// DEBUGGER
+//			System.out.println(m_botDataAuto.getTime() + "-" + m_botDataAuto.getMtLeft() + "-" + m_botDataAuto.getMtRight() + "-" + m_botDataAuto.getCannonUp());
         }
 
         m_fileWriter.close();

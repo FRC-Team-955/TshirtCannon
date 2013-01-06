@@ -9,7 +9,6 @@ import utilities.Vars;
 /**
  * This class is responsible for the "cannon" part of the t-shirt cannon.
  * It shoots shirt and raises or lowers the shirt shooter.
- * Also has the motor for controlling the Underglow.
  * @author Fauzi
  */
 
@@ -18,7 +17,6 @@ public class Cannon {
     // CONSTANTS
     private static final int ikickBackSpeed = 1;
     
-    private Victor mtUnderGlow = new Victor(Vars.chnVicLight);
     private MySolenoid solMoveTurret = new MySolenoid(Vars.chnTurretMoveUpTShirt, Vars.chnTurretMoveDownTShirt, false);
     private MySolenoid solShootShirt = new MySolenoid(Vars.chnSolShootUpTShirt, Vars.chnSolShootDownTShirt, false);
     private MySolenoid solChargeTurret = new MySolenoid(Vars.chnSolUpChargeShirt, Vars.chnSolDownChargeShirt, true);
@@ -38,7 +36,6 @@ public class Cannon {
     
     public void run()
     {
-        mtUnderGlow.set(1);
         updateChargeTime();
         updateKickback();
         updateCannonPos();        

@@ -13,7 +13,7 @@ public class Drive {
     private double m_dRightSpeed = 0;
     private double m_dLeftSpeed = 0;
     private String m_sDriveStatus = "";
-    private Victor m_mtLeft = new Victor(Vars.chnVicDrvRight);
+    private Victor m_mtLeft = new Victor(Vars.chnVicDrvLeft);
     private Victor m_mtRight = new Victor(Vars.chnVicDrvRight);
     private MyJoystick m_joy;
     

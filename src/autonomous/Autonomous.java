@@ -133,7 +133,7 @@ public class Autonomous {
             if(!m_joy.getSwitch(Vars.btRecord))
                 m_joy.flipSwitch(Vars.btReplay);
                 
-        else if(m_joy.gotPressed(Vars.btRecord))
+        if(m_joy.gotPressed(Vars.btRecord))
             if(!m_joy.getSwitch(Vars.btReplay))
                 m_joy.flipSwitch(Vars.btRecord);
                         
