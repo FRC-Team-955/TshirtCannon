@@ -10,7 +10,7 @@ public class BotData{
     private double m_dMtLeft = 0;
     private double m_dMtRight = 0;
     private boolean m_bCannonUp = false;
-    
+
     /**
      * Sets the values
      * @param dMtLeft

@@ -19,7 +19,7 @@ class Recorder {
     private boolean m_bRecDone = false;
     private Timer m_tmRecorder = new Timer();
     private Vector m_List = new Vector();
-    private BotData m_botDataAuto = new BotData();
+    private BotData m_botDataAuto;
     private String m_sFile = "";
     private FileWriter m_fileWriter;
     private Robot m_bot;
@@ -45,12 +45,9 @@ class Recorder {
         if(!m_bRecDone)
         {
             m_Index++;
+			m_botDataAuto = new BotData();
             m_botDataAuto.setValues(m_tmRecorder.get(), m_bot);
-            m_List.addElement(m_botDataAuto);
-			
-			// DEBUGGER
-			System.out.println(m_botDataAuto.getTime() + "-" + m_botDataAuto.getMtLeft() + "-" + m_botDataAuto.getMtRight() + "-" + m_botDataAuto.getCannonUp());
-        
+			m_List.addElement(m_botDataAuto);
         }
         
         else
@@ -112,10 +109,7 @@ class Recorder {
             m_fileWriter.writeDouble(m_botDataAuto.getMtLeft());
             m_fileWriter.writeDouble(m_botDataAuto.getMtRight());
             m_fileWriter.writeBoolean(m_botDataAuto.getCannonUp());
-			
-//			// DEBUGGER
-//			System.out.println(m_botDataAuto.getTime() + "-" + m_botDataAuto.getMtLeft() + "-" + m_botDataAuto.getMtRight() + "-" + m_botDataAuto.getCannonUp());
-        }
+		}
 
         m_fileWriter.close();
     }

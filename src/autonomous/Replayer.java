@@ -54,7 +54,7 @@ class Replayer {
             if(getNewData())
                 m_botDataAuto.setValues(m_botDataArray[m_iCounter++]);
             
-            m_bot.setSpeed(.5, .5);//m_botDataAuto.getMtLeft(), m_botDataAuto.getMtRight());
+            m_bot.setSpeed(m_botDataAuto.getMtLeft(), m_botDataAuto.getMtRight());
             m_bot.setCannonUp(m_botDataAuto.getCannonUp());
             
             if(EndOfFile())
