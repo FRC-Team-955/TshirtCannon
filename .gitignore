@@ -8,3 +8,5 @@ build/*
 /build/
 *.class
 *.jar
+project.xml
+project.bak.xml
